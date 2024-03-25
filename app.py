@@ -18,9 +18,9 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PROCESSED_FOLDER, exist_ok=True)
 
 # upload csv file that needs to be processed
-    @app.route('./upload', methods=['GET', 'POST'])
-    def upload_file():
-        if 'file' not in request.files:
+@app.route('./upload', methods=['POST'])
+def upload_file():
+
             return "no file part ine the request", 400
         file = request.files['file']
         if file.filename == '':
