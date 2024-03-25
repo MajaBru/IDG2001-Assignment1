@@ -2,9 +2,19 @@ import os
 import csv
 from fpdf import FPDF
 import tarfile
-# from flask import Flask, request
+from flask import Flask, request, render_template, redirect
 
-# app = Flask(__name__)
+app = Flask(__name__)
+
+
+# upload csv file that needs to be processed
+@app.route('./upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+        return redirect(url_for('download'))
+
+    return render_template('upload.html')
+return app
 
 # make directories
 os.makedirs("PDF", exist_ok=True)
@@ -87,10 +97,15 @@ with tarfile.open(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'), "w:gz") a
 
 
 
-""" @app.route("/")
+# DEfine flask enpoint for file upload
+def upload_file():
+    if 'file' not in request.files:
+        return redirect(request.url)
+
+@app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
 
  
 if __name__ == '__main__':  
-   app.run(port=5000, debug=True) """
+   app.run(port=5000, debug=True)

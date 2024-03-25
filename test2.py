@@ -7,8 +7,8 @@ from flask import Flask, request, render_template, redirect
 
 
 # Create a Flask app
-def create_app():
-    app = Flask(__name__)
+
+app = Flask(__name__)
 
 # upload csv file that needs to be processed
     @app.route('./upload', methods=['GET', 'POST'])
@@ -27,10 +27,10 @@ os.makedirs("uploads", exist_ok=True)
 os.makedirs("processed", exist_ok=True)
 
 # paths
-UPLOADS_PATH = "./uploads"
-PDF_PATH = "./PDF"
-MD_PATH = "./MD"
-PROCESSED_PATH = "./processed"
+UPLOADS_PATH = "./back-end/uploads"
+PDF_PATH = "./back-end/PDF"
+MD_PATH = "./back-end/MD"
+PROCESSED_PATH = "./back-end/processed"
 
 # files
 CSV_FILE = os.path.join(UPLOADS_PATH, "people.csv")
@@ -110,9 +110,9 @@ with tarfile.open(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'), "w:gz") a
     tar.add(PDF_PATH)
 
 
-"""@app.route("/")
+@app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
 
 if __name__ == '__main__':
-app.run(port=5000, debug=True)"""
+app.run(port=5000, debug=True)
