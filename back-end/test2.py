@@ -1,35 +1,17 @@
+from flask import Flask, request, send_from_directory
 import os
 import csv
 from fpdf import FPDF
 import tarfile
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask
+import os
+from flask import Flask
 
+# Create a Flask app
 app = Flask(__name__)
-
-
-# flask route
-def process_csv(file_path):
-    # Add your code here to process the CSV file
-    pass
-
-
-@app.route('/', methods=['GET', 'POST'])
-def upload():
-    if request.method == 'POST':
-        uploaded_file = request.files['file']
-        if uploaded_file.filename != '':
-            file_path = os.path.join(
-                UPLOADS_PATH, uploaded_file.filename)  # Define the file_path
-            uploaded_file.save(file_path)
-            # csv processing
-            process_csv(file_path)
-            return redirect(url_for('Hello_world'))
-    return render_template('upload.html')
-
 
 # make directories
 os.makedirs("PDF", exist_ok=True)
-
 os.makedirs("MD", exist_ok=True)
 os.makedirs("uploads", exist_ok=True)
 os.makedirs("processed", exist_ok=True)
@@ -54,7 +36,7 @@ def read_csv_file():
         csv_reader = csv.DictReader(file, delimiter=';')
         for row in csv_reader:
             data.append(row)
-    return data 
+    return data
 
 
 # modify the markdown template with data from the csv file
@@ -64,13 +46,13 @@ def modify_and_write_markdown(data):
         markdown = template.read()
 
     for person in data:
-        modified_markdown = (
-            markdown.replace("{{FirstName}}", person['FirstName'])
-                    .replace("{{LastName}}", person['LastName'])
-        )
+        modified_markdown = markdown.replace("{{FirstName}}",
+                                             person['First name'])
+        modified_markdown = modified_markdown.replace("{{LastName}}",
+                                                      person['Last name'])
 
         # Create a markdown file for each person
-        md_filename = f"{person['FirstName']}_{person['LastName']}.md"
+        md_filename = f"{person['First name']}_{person['Last name']}.md"
         md_filepath = os.path.join(MD_PATH, md_filename)
         with open(md_filepath, 'w') as md_file:
             md_file.write(modified_markdown)
@@ -86,16 +68,26 @@ def convert_to_pdf(md_file):
 
     pdf = FPDF()
     pdf.add_page()
+    
     # read MD file
     with open(md_file, 'r') as md:
         lines = md.readlines()
         for line in lines:
             pdf.set_font("Arial", size=12)
             pdf.multi_cell(0, 10, line)
-    # replace file extension
+
+
+# replace file extension
     pdf_file = os.path.basename(md_file).replace(".md", ".pdf")
+
     # save PDF in folder
     pdf.output(os.path.join(PDF_PATH, pdf_file))
+
+
+# DEfine flask enpoint for file upload
+# def upload_file():
+#     if 'file' not in request.files:
+#         return redirect(request.url)
 
 
 # loop through all MD files and convert to PDF
@@ -106,22 +98,14 @@ for mdfile in os.listdir(MD_PATH):
 
 # PDF folder into tar.gz file
 
-with tarfile.open(
-    os.path.join(PROCESSED_PATH, 'certificates.tar.gz'), "w:gz"
-) as tar:
+with tarfile.open(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'), "w:gz") as tar:
     tar.add(PDF_PATH)
 
-
-# DEfine flask enpoint for file upload
-def upload_file():
-    if 'file' not in request.files:
-        return redirect(request.url)
-
+app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
-
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
