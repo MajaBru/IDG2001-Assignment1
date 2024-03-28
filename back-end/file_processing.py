@@ -2,9 +2,30 @@ import os
 import csv
 from fpdf import FPDF
 import tarfile
-# from flask import Flask, request
+from flask import Flask, request, render_template, redirect, url_for
 
-# app = Flask(__name__)
+app = Flask(__name__, template_folder='../front-end')
+
+
+# flask route
+def process_csv(file_path):
+    # Add your code here to process the CSV file
+    pass
+
+
+@app.route('/', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+        uploaded_file = request.files['file']
+        if uploaded_file.filename != '':
+            file_path = os.path.join(
+                UPLOADS_PATH, uploaded_file.filename)  # Define the file_path
+            uploaded_file.save(file_path)
+            # csv processing
+            process_csv(file_path)
+            return redirect(url_for('Hello_world'))
+    return render_template('upload.html')
+
 
 # make directories
 os.makedirs("PDF", exist_ok=True)
@@ -32,7 +53,8 @@ def read_csv_file():
         csv_reader = csv.DictReader(file, delimiter=';')
         for row in csv_reader:
             data.append(row)
-    return data 
+    return data
+
 
 # modify the markdown template with data from the csv file
 def modify_and_write_markdown(data):
@@ -51,6 +73,7 @@ def modify_and_write_markdown(data):
             md_file.write(modified_markdown)
     print("Markdown files generated.")
 
+
 csv_data = read_csv_file()
 modify_and_write_markdown(csv_data)
 
@@ -60,19 +83,19 @@ def convert_to_pdf(md_file):
 
     pdf = FPDF()
     pdf.add_page()
-    
+
     # read MD file
     with open(md_file, 'r') as md:
         lines = md.readlines()
         for line in lines:
             pdf.set_font("Arial", size=12)
             pdf.multi_cell(0, 10, line)
-
-     #replace file extension
+    # replace file extension
     pdf_file = os.path.basename(md_file).replace(".md", ".pdf")
-    
+
     # save PDF in folder
     pdf.output(os.path.join(PDF_PATH, pdf_file))
+
 
 # loop through all MD files and convert to PDF
 for mdfile in os.listdir(MD_PATH):
@@ -82,15 +105,16 @@ for mdfile in os.listdir(MD_PATH):
 
 # PDF folder into tar.gz file
 
-with tarfile.open(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'), "w:gz") as tar:
+with tarfile.open(
+    os.path.join(PROCESSED_PATH, 'certificates.tar.gz'), "w:gz"
+) as tar:
     tar.add(PDF_PATH)
 
 
-
-""" @app.route("/")
+@app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
 
- 
-if __name__ == '__main__':  
-   app.run(port=5000, debug=True) """
+
+if __name__ == '__main__':
+    app.run(port=5000, debug=True)
