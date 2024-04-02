@@ -2,7 +2,7 @@ import os
 import csv
 from fpdf import FPDF
 import tarfile
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, send_file
 
 app = Flask(__name__, template_folder='../front-end')
 
@@ -22,6 +22,13 @@ PROCESSED_PATH = "./processed"
 CSV_FILE = os.path.join(UPLOADS_PATH, "people.csv")
 MARKDOWN_TEMPLATE = os.path.join(UPLOADS_PATH, "template.md")
 
+
+# home, just renders the form page
+@app.route('/')
+def home():
+    return render_template('upload.html')
+
+# upload route, handles file upload and processing
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
@@ -31,8 +38,14 @@ def upload():
             uploaded_file.save(file_path)
             process_files(file_path)
             return redirect(url_for('upload'))
+            # make download link available
+            return render_template('upload.html', download=True)
+            
     return render_template('upload.html')
 
+@app.route('/download')
+def download():
+    return send_file('processed/certificates.tar.gz', as_attachment=True)
     
 def extract_gz(file_path):
     with tarfile.open(file_path, "r:gz") as tar:
@@ -60,9 +73,6 @@ def process_files(file_path):
     # make .tar.gz file with certificates
     with tarfile.open(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'), "w:gz") as tar:
         tar.add(PDF_PATH, arcname=os.path.basename(PDF_PATH))
-
-
-
 
 
 def read_csv_file():
