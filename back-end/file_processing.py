@@ -2,29 +2,39 @@ import os
 import csv
 from fpdf import FPDF
 import tarfile
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect
+from flask import send_from_directory
 
 app = Flask(__name__, template_folder='../front-end')
 
-
-# flask route
-def process_csv(file_path):
-    # Add your code here to process the CSV file
-    pass
+app.config['SECRET_KEY'] = 'secret_key'
+app.config['UPLOADS_PATH'] = "./uploads"
+app.config['ALLOWED_EXTENSIONS'] = {'csv', 'md', 'pdf', 'tar.gz'}
 
 
 @app.route('/', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
-        uploaded_file = request.files['file']
-        if uploaded_file.filename != '':
-            file_path = os.path.join(
-                UPLOADS_PATH, uploaded_file.filename)  # Define the file_path
-            uploaded_file.save(file_path)
-            # csv processing
-            process_csv(file_path)
-            return redirect(url_for('Hello_world'))
+        uploaded_file = request.files.getlist('file')
+        for uploaded_file in uploaded_file:
+            if uploaded_file.filename != '':
+                file_path = os.path.join(UPLOADS_PATH, uploaded_file.filename)
+                uploaded_file.save(file_path)
+        return 'Files uploaded successfully'
     return render_template('upload.html')
+
+
+# flask route
+def process_csv(file_path):
+    # Add your code here to process the CSV file
+    return "processed_file.pdf"
+
+
+# paths
+UPLOADS_PATH = "./uploads"
+PDF_PATH = "./PDF"
+MD_PATH = "./MD"
+PROCESSED_PATH = "./processed"
 
 
 # make directories
@@ -33,11 +43,6 @@ os.makedirs("MD", exist_ok=True)
 os.makedirs("uploads", exist_ok=True)
 os.makedirs("processed", exist_ok=True)
 
-# paths
-UPLOADS_PATH = "./uploads"
-PDF_PATH = "./PDF"
-MD_PATH = "./MD"
-PROCESSED_PATH = "./processed"
 
 # files
 CSV_FILE = os.path.join(UPLOADS_PATH, "people.csv")
@@ -45,7 +50,6 @@ MARKDOWN_TEMPLATE = os.path.join(UPLOADS_PATH, "template.md")
 
 
 # read csv file ... JUST A DUMMY FILE FOR TESTING
-
 def read_csv_file():
     print("Reading CSV file...")
     data = [] 
@@ -111,9 +115,15 @@ with tarfile.open(
     tar.add(PDF_PATH)
 
 
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+def uploaded_file():
+    if 'file' not in request.files:
+        return redirect(request.url)
+
+
+@app.route("/download/<filename>")
+def download(filename):
+    return send_from_directory(app.config['PDF_PATH'],
+                               filename, as_attachment=True)
 
 
 if __name__ == '__main__':
