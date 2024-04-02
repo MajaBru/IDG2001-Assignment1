@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Upload Files</title>
 </head>
 <body>
-    <h1> Uploads files</h1>
-    <form action="/upload" method="post" enctype="nultipart/form-data">
-        <label for="file">file</label>
-        <input type="file" name="file" id="file">
+    <h1>Upload Files</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <label for="file">File</label>
+        <input type="file" name="file" id="file" accept=".gz">
         <input type="submit" value="Upload">
     </form>
 </body>
