@@ -27,7 +27,7 @@ MARKDOWN_TEMPLATE = None
 # home, just renders the form page
 @app.route('/')
 def home():
-    return render_template('upload.html')
+    return render_template('index.html')
 
 # upload route, handles file upload and processing
 @app.route('/upload', methods=['GET', 'POST'])
@@ -45,9 +45,9 @@ def upload():
                 process_files(file_path)
 
         # make download link available
-        return render_template('upload.html', download=True)
+        return render_template('index.html', download=True)
             
-    return render_template('upload.html')
+    return render_template('index.html')
 
 @app.route('/download')
 def download():
