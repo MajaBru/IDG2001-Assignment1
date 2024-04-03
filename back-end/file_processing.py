@@ -67,8 +67,10 @@ def modify_and_write_markdown(data):
         markdown = template.read()
 
     for person in data:
-        modified_markdown = markdown.replace("{{FirstName}}", person['First name'])
-        modified_markdown = modified_markdown.replace("{{LastName}}", person['Last name'])
+        modified_markdown = markdown.replace("{{FirstName}}", person
+                                             ['First name'])
+        modified_markdown = modified_markdown.replace("{{LastName}}", 
+                                                      person['Last name'])
 
         # Create a markdown file for each person
         md_filename = f"{person['First name']}_{person['Last name']}.md"
