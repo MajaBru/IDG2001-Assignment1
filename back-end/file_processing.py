@@ -73,14 +73,15 @@ def process_files(file_path):
         global MARKDOWN_TEMPLATE
         MARKDOWN_TEMPLATE = file_path
 
-    csv_data = None
+    
     if CSV_FILE and MARKDOWN_TEMPLATE:
-        csv_data = read_csv_file()
+        csv_data = read_csv_file() 
         modify_and_write_markdown(csv_data)
         create_pdfs()
         create_tar_file()
     else:
         print("CSV file and Markdown template not found. Cannot proceed with processing.")
+
 
 def process_extracted_files():
     for extracted_file in os.listdir(UPLOADS_PATH):
