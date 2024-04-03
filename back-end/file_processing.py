@@ -37,10 +37,8 @@ def upload():
             file_path = os.path.join(UPLOADS_PATH, uploaded_file.filename)
             uploaded_file.save(file_path)
             process_files(file_path)
-            return redirect(url_for('upload'))
             # make download link available
             return render_template('upload.html', download=True)
-            
     return render_template('upload.html')
 
 @app.route('/download')

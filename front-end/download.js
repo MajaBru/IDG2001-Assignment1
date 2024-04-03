@@ -1,24 +1,31 @@
-
-/* const submitButton = document.querySelector("#upload-btn");
-
 document.querySelector("#upload-form").addEventListener('submit', function(e) {
-    e.preventDefault(); */
+    e.preventDefault();
 
-    /* let downloadLink = document.querySelector('#download-link'); */
-    
-        /* fetch('/download', {
-            method: 'GET',  
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            window.location.href = '/download';
-            return response.json();
-        })
-        .catch(error => {
-            console.error('Error processing and downloading file:', error);
-        });
-    });  */// Delay in milliseconds, adjust as needed
+    // Create a new FormData instance
+    let formData = new FormData();
 
-    
+    // Get the files from the input field
+    let files = document.querySelector('#file').files;
+
+    // Append each file to the FormData instance
+    for (let i = 0; i < files.length; i++) {
+        formData.append('file', files[i]);
+    }
+
+    // Send the files to the server
+    fetch('/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        // After successful upload, show the download link
+        document.querySelector('#download-link').style.display = 'block';
+    })
+    .catch(error => {
+        console.error('Error uploading file:', error);
+    });
+});
