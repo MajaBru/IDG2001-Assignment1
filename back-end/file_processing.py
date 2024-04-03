@@ -14,7 +14,7 @@ def upload():
         return redirect(url_for('download'))
 
     return render_template('upload.html')
-return app
+    return app
 
 # make directories
 os.makedirs("PDF", exist_ok=True)

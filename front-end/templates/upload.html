@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <input type="file" id="fileUpload" />
+    <a href="your_download_link" id="downloadLink" style="display: none;">Download files</a>
+
+    <script>
+    document.getElementById('fileUpload').addEventListener('change', function() {
+        if (this.value) {
+            document.getElementById('downloadLink').style.display = 'block';
+        } else {
+            document.getElementById('downloadLink').style.display = 'none';
+        }
+    });
+    </script>
+</body>
+</html>
