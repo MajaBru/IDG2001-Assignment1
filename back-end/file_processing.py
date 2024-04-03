@@ -79,7 +79,7 @@ def read_csv_file():
     print("Reading CSV file...")
     data = []
     with open(CSV_FILE, 'r') as file:
-        csv_reader = csv.DictReader(file, delimiter=';')
+        csv_reader = csv.DictReader(file, delimiter=',')
         for row in csv_reader:
             data.append(row)
     return data
@@ -91,10 +91,10 @@ def modify_and_write_markdown(data):
         markdown = template.read()
 
     for person in data:
-        modified_markdown = markdown.replace("{{FirstName}}", person['First name'])
-        modified_markdown = modified_markdown.replace("{{LastName}}", person['Last name'])
+        modified_markdown = markdown.replace("{{FirstName}}", person['FirstName'])
+        modified_markdown = modified_markdown.replace("{{LastName}}", person['LastName'])
 
-        md_filename = f"{person['First name']}_{person['Last name']}.md"
+        md_filename = f"{person['FirstName']}_{person['LastName']}.md"
         md_filepath = os.path.join(MD_PATH, md_filename)
         with open(md_filepath, 'w') as md_file:
             md_file.write(modified_markdown)
