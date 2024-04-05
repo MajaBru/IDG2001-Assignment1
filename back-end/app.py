@@ -143,5 +143,5 @@ def convert_to_pdf(md_file):
     pdf.output(os.path.join(PDF_PATH, pdf_file))
 
 
-if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+""" if __name__ == '__main__':
+    app.run(port=5000, debug=True) """
