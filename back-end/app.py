@@ -65,6 +65,7 @@ def upload():
                 else:
                     flash("invalid file type.")
                     return redirect(request.url)
+
         # make download link available
         return redirect(url_for('upload_success', download=True))
 
@@ -124,17 +125,6 @@ def process_extracted_files():
             MARKDOWN_TEMPLATE = extracted_file_path
 
 
-def process_extracted_files():
-    for extracted_file in os.listdir(UPLOADS_PATH):
-        extracted_file_path = os.path.join(UPLOADS_PATH, extracted_file)
-        if extracted_file.endswith('.csv'):
-            global CSV_FILE
-            CSV_FILE = extracted_file_path
-        elif extracted_file.endswith('.md'):
-            global MARKDOWN_TEMPLATE
-            MARKDOWN_TEMPLATE = extracted_file_path
-
-
 def create_pdfs():
     for mdfile in os.listdir(MD_PATH):
         if mdfile.endswith(".md"):
@@ -161,13 +151,11 @@ def modify_and_write_markdown(data):
     print("Modifying markdown template...")
     with open(MARKDOWN_TEMPLATE, 'r') as template:
         markdown = template.read()
-
     for person in data:
         modified_markdown = markdown.replace("{{FirstName}}",
                                              person['FirstName'])
         modified_markdown = modified_markdown.replace("{{LastName}}",
                                                       person['LastName'])
-
         md_filename = f"{person['FirstName']}_{person['LastName']}.md"
         md_filepath = os.path.join(MD_PATH, md_filename)
         with open(md_filepath, 'w') as md_file:
@@ -178,14 +166,12 @@ def modify_and_write_markdown(data):
 def convert_to_pdf(md_file):
     pdf = FPDF()
     pdf.add_page()
-
-
     ntnu_logo_path = os.path.join("./uploads", "NTNU-logo.png")
     pdf.image(ntnu_logo_path, x=10, y=10, w=50)
 
     signature_path = os.path.join("./uploads", "signature.png")
     pdf.image(signature_path, x=10, y=10, w=50)
- 
+
     with open(md_file, 'r') as md:
         lines = md.readlines()
         for line in lines:
