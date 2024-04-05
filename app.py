@@ -4,7 +4,7 @@ from fpdf import FPDF
 import tarfile
 from flask import Flask, request, render_template, redirect, url_for, send_file
 
-app = Flask(__name__,  template_folder='../front-end')
+app = Flask(__name__,  template_folder='./front-end')
 
 # make directories
 os.makedirs("PDF", exist_ok=True)
@@ -144,4 +144,4 @@ def convert_to_pdf(md_file):
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
