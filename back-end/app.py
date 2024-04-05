@@ -62,9 +62,9 @@ def upload():
                                              uploaded_file.filename)
                     uploaded_file.save(file_path)
                     process_files(file_path)
-                else:
-                    flash("invalid file type.")
-                    return redirect(request.url)
+            else:
+                flash("invalid file type.")
+                return redirect(request.url)
         # make download link available
         return redirect(url_for('upload_success', download=True))
 
