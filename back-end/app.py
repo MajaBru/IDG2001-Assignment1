@@ -124,6 +124,13 @@ def modify_and_write_markdown(data):
 def convert_to_pdf(md_file):
     pdf = FPDF()
     pdf.add_page()
+
+
+    ntnu_logo_path = os.path.join("./uploads", "NTNU-logo.png")
+    pdf.image(ntnu_logo_path, x=10, y=10, w=50)
+
+    signature_path = os.path.join("./uploads", "signature.png")
+    pdf.image(signature_path, x=10, y=10, w=50)
  
     with open(md_file, 'r') as md:
         lines = md.readlines()
