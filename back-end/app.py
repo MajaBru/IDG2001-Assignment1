@@ -1,6 +1,6 @@
 import os
 import csv
-import tempfile
+# import tempfile
 from fpdf import FPDF
 import tarfile
 from flask import Flask, request, render_template, redirect, url_for, flash
@@ -9,7 +9,7 @@ from flask import send_file
 
 app = Flask(__name__, template_folder='../front-end')
 app.secret_key = 'Your_secret_key'
-ALLOWED_EXTENSIONS = set(['tar.gz', 'csv'])
+ALLOWED_EXTENSIONS = set(['tar.gz', 'csv', 'md'])
 
 
 def allowed_file(filename):
@@ -64,7 +64,7 @@ def upload():
                     process_files(file_path)
                 else:
                     flash("invalid file type.")
-                    return redirect(url_for(request.url))
+                    return redirect(request.url)
         # make download link available
         return redirect(url_for('upload_success', download=True))
 
@@ -81,8 +81,7 @@ def upload_success():
 
 @app.route('/download')
 def download():
-    return send_file(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'),
-                     as_attachment=True)
+    return send_file(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'), as_attachment=True)
 
 
 def extract_gz(file_path):
