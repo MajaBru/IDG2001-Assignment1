@@ -8,7 +8,7 @@ from flask import send_file
 
 app = Flask(__name__, template_folder='../front-end')
 app.secret_key = 'Your_secret_key'
-ALLOWED_EXTENSIONS = set(['tar.gz', 'csv'])
+ALLOWED_EXTENSIONS = set(['tar.gz', 'csv', 'md'])
 
 
 def allowed_file(filename):
@@ -55,13 +55,12 @@ def upload():
         for uploaded_file in uploaded_files:
             if uploaded_file.filename != '':
                 if allowed_file(uploaded_file.filename):
-                    file_path = os.path.join(UPLOADS_PATH,
-                                             uploaded_file.filename)
+                    file_path = os.path.join(UPLOADS_PATH, uploaded_file.filename)
                     uploaded_file.save(file_path)
                     process_files(file_path)
                 else:
                     flash("invalid file type.")
-                    return redirect(url_for(request.url))
+                    return redirect(url_for('home'))
         # make download link available
         return redirect(url_for('upload_success', download=True))
 
@@ -149,10 +148,8 @@ def modify_and_write_markdown(data):
         markdown = template.read()
 
     for person in data:
-        modified_markdown = markdown.replace("{{FirstName}}",
-                                             person['FirstName'])
-        modified_markdown = modified_markdown.replace("{{LastName}}",
-                                                      person['LastName'])
+        modified_markdown = markdown.replace("{{FirstName}}", person['FirstName'])
+        modified_markdown = modified_markdown.replace("{{LastName}}", person['LastName'])
 
         md_filename = f"{person['FirstName']}_{person['LastName']}.md"
         md_filepath = os.path.join(MD_PATH, md_filename)
