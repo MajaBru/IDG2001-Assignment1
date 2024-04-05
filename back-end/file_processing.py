@@ -8,7 +8,7 @@ from flask import send_file
 
 app = Flask(__name__, template_folder='../front-end')
 app.secret_key = 'Your_secret_key'
-ALLOWED_EXTENSIONS = set(['tar.gz', 'csv', 'md'])
+ALLOWED_EXTENSIONS = set(['tar.gz', 'csv'])
 
 
 def allowed_file(filename):
@@ -55,7 +55,8 @@ def upload():
         for uploaded_file in uploaded_files:
             if uploaded_file.filename != '':
                 if allowed_file(uploaded_file.filename):
-                    file_path = os.path.join(UPLOADS_PATH, uploaded_file.filename)
+                    file_path = os.path.join(UPLOADS_PATH,
+                                             uploaded_file.filename)
                     uploaded_file.save(file_path)
                     process_files(file_path)
                 else:
@@ -71,7 +72,8 @@ def upload():
 def upload_success():
     downloaded_files = get_downloaded_files()
     print("downloaded files:", downloaded_files)
-    return render_template('upload_success.html', downloaded_files=downloaded_files)
+    return render_template('upload_success.html',
+                           downloaded_files=downloaded_files)
 
 
 @app.route('/download')
@@ -104,7 +106,8 @@ def process_files(file_path):
         create_pdfs()
         create_tar_file()
     else:
-        print("CSV file and Markdown template not found. Cannot proceed with processing.")
+        print("CSV file and Markdown template not found. \
+              Cannot proceed with processing.")
 
 
 def process_extracted_files():
@@ -146,8 +149,10 @@ def modify_and_write_markdown(data):
         markdown = template.read()
 
     for person in data:
-        modified_markdown = markdown.replace("{{FirstName}}", person['FirstName'])
-        modified_markdown = modified_markdown.replace("{{LastName}}", person['LastName'])
+        modified_markdown = markdown.replace("{{FirstName}}",
+                                             person['FirstName'])
+        modified_markdown = modified_markdown.replace("{{LastName}}",
+                                                      person['LastName'])
 
         md_filename = f"{person['FirstName']}_{person['LastName']}.md"
         md_filepath = os.path.join(MD_PATH, md_filename)
