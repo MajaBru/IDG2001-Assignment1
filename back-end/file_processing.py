@@ -23,11 +23,17 @@ CSV_FILE = None
 MARKDOWN_TEMPLATE = None
 
 
+def get_downloaded_files():
+    downloaded_files = []
+    for filename in os.listdir(PROCESSED_PATH):
+        downloaded_files.append(filename)
+    return downloaded_files
 
 # home, just renders the form page
 @app.route('/')
 def home():
-    return render_template('upload.html')
+    return render_template('index.html')
+
 
 # upload route, handles file upload and processing
 @app.route('/upload', methods=['GET', 'POST'])
@@ -35,7 +41,7 @@ def upload():
     if request.method == 'POST':
         if 'file' not in request.files:
             return redirect(request.url)
-        
+
         uploaded_files = request.files.getlist('file')
 
         for uploaded_file in uploaded_files:
@@ -45,18 +51,25 @@ def upload():
                 process_files(file_path)
 
         # make download link available
-        return render_template('upload.html', download=True)
-            
-    return render_template('upload.html')
+        return redirect(url_for('upload_success', download=True))
+
+    return render_template('index.html')
+
+
+@app.route('/upload/success')
+def upload_success():
+    downloaded_files = get_downloaded_files()
+    return render_template('upload_success.html', downloaded_files=downloaded_files)
+
 
 @app.route('/download')
 def download():
     return send_file('processed/certificates.tar.gz', as_attachment=True)
-    
+
+
 def extract_gz(file_path):
     with tarfile.open(file_path, "r:gz") as tar:
         for member in tar.getmembers():
-    
             member.name = os.path.basename(member.name)
             tar.extract(member, path=UPLOADS_PATH)
 
@@ -73,7 +86,6 @@ def process_files(file_path):
         global MARKDOWN_TEMPLATE
         MARKDOWN_TEMPLATE = file_path
 
-    
     if CSV_FILE and MARKDOWN_TEMPLATE:
         csv_data = read_csv_file() 
         modify_and_write_markdown(csv_data)
@@ -93,11 +105,13 @@ def process_extracted_files():
             global MARKDOWN_TEMPLATE
             MARKDOWN_TEMPLATE = extracted_file_path
 
+
 def create_pdfs():
     for mdfile in os.listdir(MD_PATH):
         if mdfile.endswith(".md"):
             md_file_path = os.path.join(MD_PATH, mdfile)
             convert_to_pdf(md_file_path)
+
 
 def create_tar_file():
     with tarfile.open(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'), "w:gz") as tar:

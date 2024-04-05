@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+!<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Upload Files</title>
+    <title>Upload successful</title>
   </head>
   <body>
     <style>
@@ -67,21 +67,21 @@
         cursor: pointer;
       }
     </style>
-    <h1>Upload Files</h1>
-    <form
-      id="upload-form"
-      action="/upload"
-      method="post"
-      enctype="multipart/form-data"
-    >
-      <label for="file">File</label>
-      <input type="file" name="file" id="file" multiple accept=".gz" />
-      <input id="upload-btn" type="submit" value="Upload" />
-      {% if download %}
-      <a id="download-link" href="/download">Download file</a>
-      {% endif %}
-    </form>
-
+    <h1>Upload successful</h1>
+    <form id="upload-form"
+    action="/upload"
+    method="post"
+    enctype="multipart/form-data">
+  <p>Files uploaded successfully</p>
+    <a href="/"> <button>Upload more</button> </a>
+    <ul>
+      {% for file in downloaded_files%}
+      <li>{{ file }}</li>
+      {% endfor %}
+    </ul>
+    <a id="download-link" href="/download">Download file</a>
+  </form>
+    
     <script src="download.js"></script>
   </body>
 </html>

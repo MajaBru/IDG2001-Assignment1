@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Files</title>
+</head>
+<body>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f1f1f1;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 50px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+    }
+    label {
+        padding: 0px;
+        color: #25415f;
+    }
+
+    input {
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 100%;
+    }
+
+    input[type="file"] {
+        margin: 10px 0;
+        padding: 10px;
+    }
+    input[type="submit"] {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+    }
+</style>
+<h1>Upload Files</h1>
+<form
+    id="upload-form"
+    action="/upload"
+    method="post"
+    enctype="multipart/form-data">
+    <label for="file">File</label>
+    <input type="file" name="file" id="file" multiple accept=".gz" required />
+    <input id="upload-btn" type="submit" value="Upload" />
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% if download %}
+        <a id="download-link" href="/download">Download file</a>
+    {% endif %}
+</form>
+{% if processed_files %}
+    <ul id="downloaded-files-list">
+        {% for file in processed_files %}
+            <li><a href="/download/{{ file }}">{{ file }}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}
+<script src="download.js"></script>
+</body>
+</html>
