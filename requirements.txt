@@ -7,4 +7,4 @@ tox==4.4.12
 setuptools==67.6.1
 flask==3.0.2
 fpdf==1.7.2
-gunicorn>=20.1.0
+gunicorn==21.2.0

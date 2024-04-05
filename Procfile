@@ -1,1 +1,1 @@
-web: gunicorn -b 0.0.0.0:7981 --log-level debug back-end.app:app
+web: gunicorn app:app
