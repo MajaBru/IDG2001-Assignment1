@@ -9,13 +9,12 @@ from flask import send_file
 
 app = Flask(__name__, template_folder='../front-end')
 app.secret_key = 'Your_secret_key'
-ALLOWED_EXTENSIONS = set(['tar.gz', 'csv'])
+""" ALLOWED_EXTENSIONS = set(['tar.gz', 'csv'])
 
 
 def allowed_file(filename):
     return '.' in filename and \
-          filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
+          filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS """
 
 # make directories
 def create_dir(dir_name):
@@ -57,14 +56,14 @@ def upload():
 
         for uploaded_file in uploaded_files:
             if uploaded_file.filename != '':
-                if allowed_file(uploaded_file.filename):
+            
                     file_path = os.path.join(UPLOADS_PATH,
                                              uploaded_file.filename)
                     uploaded_file.save(file_path)
                     process_files(file_path)
-                else:
-                    flash("invalid file type.")
-                    return redirect(request.url)
+            else:
+                flash("invalid file type.")
+                return redirect(request.url)
         # make download link available
         return redirect(url_for('upload_success', download=True))
 
