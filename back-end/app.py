@@ -1,5 +1,6 @@
 import os
 import csv
+import tempfile
 from fpdf import FPDF
 import tarfile
 from flask import Flask, request, render_template, redirect, url_for, send_file
@@ -133,15 +134,16 @@ def modify_and_write_markdown(data):
 def convert_to_pdf(md_file):
     pdf = FPDF()
     pdf.add_page()
-
+ 
     with open(md_file, 'r') as md:
         lines = md.readlines()
         for line in lines:
             pdf.set_font("Arial", size=12)
             pdf.multi_cell(0, 10, line)
     pdf_file = os.path.basename(md_file).replace(".md", ".pdf")
-    pdf.output(os.path.join(PDF_PATH, pdf_file))
-
-
+    temp_dir = tempfile.gettempdir()
+    pdf.output(os.path.join(temp_dir, pdf_file))
+ 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
