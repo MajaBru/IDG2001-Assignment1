@@ -2,9 +2,19 @@ import os
 import csv
 from fpdf import FPDF
 import tarfile
-from flask import Flask, request, render_template, redirect, url_for, send_file
+from flask import Flask, request, render_template, redirect, url_for, flash
+from flask import send_file
+
 
 app = Flask(__name__, template_folder='../front-end')
+app.secret_key = 'Your_secret_key'
+ALLOWED_EXTENSIONS = set(['tar.gz', 'csv', 'md'])
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+          filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 # make directories
 os.makedirs("PDF", exist_ok=True)
@@ -29,6 +39,7 @@ def get_downloaded_files():
         downloaded_files.append(filename)
     return downloaded_files
 
+
 # home, just renders the form page
 @app.route('/')
 def home():
@@ -39,17 +50,17 @@ def home():
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
-        if 'file' not in request.files:
-            return redirect(request.url)
-
         uploaded_files = request.files.getlist('file')
 
         for uploaded_file in uploaded_files:
             if uploaded_file.filename != '':
-                file_path = os.path.join(UPLOADS_PATH, uploaded_file.filename)
-                uploaded_file.save(file_path)
-                process_files(file_path)
-
+                if allowed_file(uploaded_file.filename):
+                    file_path = os.path.join(UPLOADS_PATH, uploaded_file.filename)
+                    uploaded_file.save(file_path)
+                    process_files(file_path)
+                else:
+                    flash("invalid file type.")
+                    return redirect(url_for(request.url))
         # make download link available
         return redirect(url_for('upload_success', download=True))
 
@@ -59,6 +70,7 @@ def upload():
 @app.route('/upload/success')
 def upload_success():
     downloaded_files = get_downloaded_files()
+    print("downloaded files:", downloaded_files)
     return render_template('upload_success.html', downloaded_files=downloaded_files)
 
 

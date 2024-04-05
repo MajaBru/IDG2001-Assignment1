@@ -66,6 +66,10 @@
         color: #fff;
         cursor: pointer;
       }
+
+      h1{
+        color: green;
+      }
     </style>
     <h1>Upload successful</h1>
     <form id="upload-form"
@@ -73,9 +77,13 @@
     method="post"
     enctype="multipart/form-data">
   <p>Files uploaded successfully</p>
-    <a href="/"> <button>Upload more</button> </a>
+
+    {% if downloaded_files %}
+    <a href="/"><button>Upload more</button></a>
+    {% endif %}
+
     <ul>
-      {% for file in downloaded_files%}
+      {% for file in downloaded_files %}
       <li>{{ file }}</li>
       {% endfor %}
     </ul>
