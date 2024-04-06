@@ -17,6 +17,7 @@ def allowed_file(filename):
     return '.' in filename and \
           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS """
 
+
 # make directories
 def create_dir(dir_name):
     dir_path = os.path.abspath(dir_name)
@@ -57,11 +58,9 @@ def upload():
 
         for uploaded_file in uploaded_files:
             if uploaded_file.filename != '':
-            
-                    file_path = os.path.join(UPLOADS_PATH,
-                                             uploaded_file.filename)
-                    uploaded_file.save(file_path)
-                    process_files(file_path)
+                file_path = os.path.join(UPLOADS_PATH, uploaded_file.filename)
+                uploaded_file.save(file_path)
+                process_files(file_path)
             else:
                 flash("invalid file type.")
                 return redirect(request.url)
@@ -80,9 +79,9 @@ def upload_success():
 
 
 @app.route('/download')
-
 def download():
-    return send_file(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'), as_attachment=True)
+    return send_file(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'),
+                     as_attachment=True)
 
 
 def extract_gz(file_path):
@@ -133,7 +132,8 @@ def create_pdfs():
 
 
 def create_tar_file():
-    with tarfile.open(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'), "w:gz") as tar:
+    with tarfile.open(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'),
+                      "w:gz") as tar:
         tar.add(PDF_PATH, arcname=os.path.basename(PDF_PATH))
 
 
