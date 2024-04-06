@@ -81,6 +81,7 @@ def upload_success():
 
 
 @app.route('/download')
+
 def download():
     return send_file(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'), as_attachment=True)
 
