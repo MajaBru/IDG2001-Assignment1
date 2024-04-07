@@ -95,8 +95,7 @@ def process_files(file_path):
         create_pdfs()
         create_tar_file()
     else:
-        print("CSV file and Markdown template not found. \
-              Cannot proceed with processing.")
+        print("CSV file and MD template not found. Cant proceed with processing.")
 
 
 def process_extracted_files(): 
@@ -136,7 +135,7 @@ def modify_and_write_markdown(data):
     for person in data:
         modified_markdown = markdown.replace("{{FirstName}}", person['FirstName'])
         modified_markdown = modified_markdown.replace("{{LastName}}", person['LastName'])
-        
+
         md_filename = f"{person['FirstName']}_{person['LastName']}.md"
         md_filepath = os.path.join(MD_PATH, md_filename)
         with open(md_filepath, 'w') as md_file:
