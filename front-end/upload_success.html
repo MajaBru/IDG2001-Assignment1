@@ -89,6 +89,11 @@
 
     <p>Files uploaded successfully</p>
 
+    <form id="upload-form"
+    action="/upload"
+    method="post"
+    enctype="multipart/form-data">
+
     {% if downloaded_files %}
     <a href="/">Upload more</a>
     {% endif %}
@@ -99,6 +104,6 @@
       {% endfor %}
     </ul>
     <a id="download-link" href="/download">Download file</a>
-    
+    </form>
   </body>
 </html>
