@@ -74,26 +74,9 @@
     method="post"
     enctype="multipart/form-data">
     <label for="file">File</label>
-    <input type="file" name="file" id="file" multiple accept=".gz" required />
+    <input type="file" name="file" id="file" multiple required />
     <input id="upload-btn" type="submit" value="Upload" />
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    {% if download %}
-        <a id="download-link" href="/download">Download file</a>
-    {% endif %}
 </form>
-{% if processed_files %}
-    <ul id="downloaded-files-list">
-        {% for file in processed_files %}
-            <li><a href="/download/{{ file }}">{{ file }}</a></li>
-        {% endfor %}
-    </ul>
-{% endif %}
-<script src="/download.js"></script>
+
 </body>
 </html>
