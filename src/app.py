@@ -1,21 +1,11 @@
 import os
 import csv
-# import tempfile
 from fpdf import FPDF
 import tarfile
 from flask import Flask, request, render_template, redirect, url_for, flash
 from flask import send_file
 
-
 app = Flask(__name__, template_folder='../front-end')
-app.secret_key = 'Your_secret_key'
-""" ALLOWED_EXTENSIONS = set(['tar.gz', 'csv'])
-ALLOWED_EXTENSIONS = set(['tar.gz', 'csv', 'md'])
-
-
-def allowed_file(filename):
-    return '.' in filename and \
-          filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS """
 
 
 # make directories
@@ -84,11 +74,7 @@ def download():
                      as_attachment=True)
 
 
-def extract_gz(file_path):
-    with tarfile.open(file_path, "r:gz") as tar:
-        for member in tar.getmembers():
-            member.name = os.path.basename(member.name)
-            tar.extract(member, path=UPLOADS_PATH)
+
 
 
 def process_files(file_path):
@@ -113,7 +99,7 @@ def process_files(file_path):
               Cannot proceed with processing.")
 
 
-def process_extracted_files():
+def process_extracted_files(): 
     for extracted_file in os.listdir(UPLOADS_PATH):
         extracted_file_path = os.path.join(UPLOADS_PATH, extracted_file)
         if extracted_file.endswith('.csv'):
@@ -124,18 +110,14 @@ def process_extracted_files():
             MARKDOWN_TEMPLATE = extracted_file_path
 
 
-def create_pdfs():
-    for mdfile in os.listdir(MD_PATH):
-        if mdfile.endswith(".md"):
-            md_file_path = os.path.join(MD_PATH, mdfile)
-            convert_to_pdf(md_file_path)
+def extract_gz(file_path):
+    with tarfile.open(file_path, "r:gz") as tar:
+        for member in tar.getmembers():
+            member.name = os.path.basename(member.name)
+            tar.extract(member, path=UPLOADS_PATH)
 
 
-def create_tar_file():
-    with tarfile.open(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'),
-                      "w:gz") as tar:
-        tar.add(PDF_PATH, arcname=os.path.basename(PDF_PATH))
-
+### functions dealing with the processing 
 
 def read_csv_file():
     print("Reading CSV file...")
@@ -163,23 +145,43 @@ def modify_and_write_markdown(data):
     print("Markdown files generated.")
 
 
-def convert_to_pdf(md_file):
+def convert_to_pdf(md_file): # https://py-pdf.github.io/fpdf2/Tutorial.html fpdf
     pdf = FPDF()
     pdf.add_page()
-    ntnu_logo_path = os.path.join("./uploads", "NTNU-logo.png")
-    pdf.image(ntnu_logo_path, x=10, y=10, w=50)
-
-    signature_path = os.path.join("./uploads", "signature.png")
-    pdf.image(signature_path, x=10, y=10, w=50)
 
     with open(md_file, 'r') as md:
         lines = md.readlines()
         for line in lines:
-            pdf.set_font("Arial", size=12)
-            pdf.multi_cell(0, 10, line)
+            
+            placeholder = line.strip().endswith('.png)') # getting the line where the images are located on the md file
+            if placeholder:
+                
+                # find the images in uploads
+                if "NTNU-logo.png" in line:
+                    image_path = os.path.join(UPLOADS_PATH, "NTNU-logo.png") 
+                elif "signature.png" in line:
+                    image_path = os.path.join(UPLOADS_PATH, "signature.png")
+
+                if os.path.exists(image_path):
+                    pdf.image(image_path, x=pdf.get_x(), y=pdf.get_y(), w=50)
+                    pdf.ln(20)
+            else:
+                pdf.set_font("Arial", size=12)
+                pdf.multi_cell(0, 10, line)
+
     pdf_file = os.path.basename(md_file).replace(".md", ".pdf")
     pdf.output(os.path.join(PDF_PATH, pdf_file))
 
+def create_pdfs():
+    for mdfile in os.listdir(MD_PATH):
+        if mdfile.endswith(".md"):
+            md_file_path = os.path.join(MD_PATH, mdfile)
+            convert_to_pdf(md_file_path)
+
+def create_tar_file():
+    with tarfile.open(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'),
+                      "w:gz") as tar:
+        tar.add(PDF_PATH, arcname=os.path.basename(PDF_PATH))
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

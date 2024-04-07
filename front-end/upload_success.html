@@ -1,4 +1,4 @@
-!<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -70,13 +70,24 @@
       h1{
         color: green;
       }
+      a {
+        margin: .4em;
+        padding: .5em;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: .2em;
+      }
+      a:hover {
+        background-color: #025ab9;
+      }
+      ul {
+        margin-top: 1em;
+      }
     </style>
     <h1>Upload successful</h1>
-    <form id="upload-form"
-    action="/upload"
-    method="post"
-    enctype="multipart/form-data">
-  <p>Files uploaded successfully</p>
+
+    <p>Files uploaded successfully</p>
 
     {% if downloaded_files %}
     <a href="/">Upload more</a>
@@ -88,8 +99,6 @@
       {% endfor %}
     </ul>
     <a id="download-link" href="/download">Download file</a>
-  </form>
     
-    <script src="download.js"></script>
   </body>
 </html>
