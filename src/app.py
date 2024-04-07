@@ -54,7 +54,7 @@ def upload():
             else:
                 flash("invalid file type.")
                 return redirect(request.url)
-        # make download link available
+        
         return redirect(url_for('upload_success', download=True))
 
     return render_template('index.html')
@@ -64,17 +64,12 @@ def upload():
 def upload_success():
     downloaded_files = get_downloaded_files()
     print("downloaded files:", downloaded_files)
-    return render_template('upload_success.html',
-                           downloaded_files=downloaded_files)
+    return render_template('upload_success.html', downloaded_files=downloaded_files)
 
 
 @app.route('/download')
 def download():
-    return send_file(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'),
-                     as_attachment=True)
-
-
-
+    return send_file(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'), as_attachment=True)
 
 
 def process_files(file_path):
@@ -177,8 +172,7 @@ def create_pdfs():
             convert_to_pdf(md_file_path)
 
 def create_tar_file():
-    with tarfile.open(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'),
-                      "w:gz") as tar:
+    with tarfile.open(os.path.join(PROCESSED_PATH, 'certificates.tar.gz'),"w:gz") as tar:
         tar.add(PDF_PATH, arcname=os.path.basename(PDF_PATH))
 
 if __name__ == '__main__':
