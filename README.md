@@ -18,10 +18,3 @@ We deployed this service with Railway here: [https://web-file-processor.up.railw
 3. Wait for processing and to be redirected
 4. If successful, you will arrive at a new page saying "Upload was successful".
 5. Click "Download file" to download the new processed .tar.gz file containing all PDFs.
-
-
-
-
-
-
-The collaborators of this project are:  Maja, Elina and Sabrina.
