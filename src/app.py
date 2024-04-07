@@ -134,10 +134,9 @@ def modify_and_write_markdown(data):
     with open(MARKDOWN_TEMPLATE, 'r') as template:
         markdown = template.read()
     for person in data:
-        modified_markdown = markdown.replace("{{FirstName}}",
-                                             person['FirstName'])
-        modified_markdown = modified_markdown.replace("{{LastName}}",
-                                                      person['LastName'])
+        modified_markdown = markdown.replace("{{FirstName}}", person['FirstName'])
+        modified_markdown = modified_markdown.replace("{{LastName}}", person['LastName'])
+        
         md_filename = f"{person['FirstName']}_{person['LastName']}.md"
         md_filepath = os.path.join(MD_PATH, md_filename)
         with open(md_filepath, 'w') as md_file:
